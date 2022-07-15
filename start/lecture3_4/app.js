@@ -77,6 +77,11 @@ class App{
             this.room.add( object );
         }
         
+        this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial(
+            {color: 0xFFFFFF, side: THREE.BackSide} 
+        ));
+        this.highlight.scale.set(1.2,1.2,1.2);
+        this.scene.add(this.highlight);
     }
     
     setupXR(){
@@ -86,6 +91,23 @@ class App{
         
         this.controllers = this.buildControllers();
         
+        const self = this;
+
+        function onSelectStart(){
+            this.children[0].scale.z = 10;
+            this.userData.selectPressed = true;
+        }
+
+        function onSelectEnd(){
+            this.children[0].scale.z = 0;
+            self.highlight.visible = false;
+            this.userData.selectPressed = false;
+        }
+
+        this.controllers.forEach((controller)=> {
+            controller.addEventListener('selectstart', onSelectStart);
+            controller.addEventListener('selectend', onSelectEnd);
+        });
     }
     
     buildControllers(){
@@ -118,7 +140,9 @@ class App{
     }
     
     handleController( controller ){
-        
+        if (controller.userData.selectPressed){
+            controller.children[0].scale.z = 10;
+        }
     }
     
     resize(){
