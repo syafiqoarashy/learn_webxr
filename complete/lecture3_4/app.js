@@ -148,7 +148,7 @@ class App{
             this.workingMatrix.identity().extractRotation( controller.matrixWorld );
 
             this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
-            this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.workingMatrix );
+            this.raycaster.ray.direction.set( 0, 0, -1 ).applyMatrix4( this.workingMatrix );
 
             const intersects = this.raycaster.intersectObjects( this.room.children );
 

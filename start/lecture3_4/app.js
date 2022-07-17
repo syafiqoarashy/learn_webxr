@@ -37,6 +37,7 @@ class App{
         this.controls.update();
         
         this.stats = new Stats();
+        document.body.appendChild(this.stats.dom);
         
         this.raycaster = new THREE.Raycaster();
         this.workingMatrix = new THREE.Matrix4();
@@ -88,10 +89,10 @@ class App{
         this.renderer.xr.enabled = true;
         
         const button = new VRButton( this.renderer );
-        
+        const self = this;
         this.controllers = this.buildControllers();
         
-        const self = this;
+        
 
         function onSelectStart(){
             this.children[0].scale.z = 10;
@@ -157,7 +158,7 @@ class App{
                 this.room.children
             );
 
-            if (intersects.length > 0){
+            if (intersects.length>0){
                 intersects[0].object.add(this.highlight);
                 this.highlight.visible = true;
                 controller.children[0].scale.z = intersects[0].distance;
