@@ -104,6 +104,7 @@ class App{
             
         }
         
+
         this.controller = this.renderer.xr.getController( 0 );
         this.controller.addEventListener( 'selectstart', onSelectStart );
         this.controller.addEventListener( 'selectend', onSelectEnd );
@@ -135,33 +136,32 @@ class App{
                 //Enter code here
                 loader = new GLTFLoader().setPath('../../assets/');
                 loader.load('flash-light.glb',
-                (gltfg)=> {
-                    const flashLight = gltf.scene.children[2];
-                    const scale = 0.6;
-                    flashLight.scale.set(scale,scale,scale);
-                    controller.add(flashLight);
-                    self.spotlight = new THREE.Group();
+                    (gltfg)=> {
+                        const flashLight = gltf.scene.children[2];
+                        const scale = 0.6;
+                        flashLight.scale.set(scale,scale,scale);
+                        controller.add(flashLight);
+                        self.spotlight = new THREE.Group();
+                        const spotlight = new THREE.SpotLight(0xFFFFFF,2,12,Math.PI/15,0.3);
+                        geometry = new THREE.CylinderBufferGeometry(0.03,1,5,32,5,true);
+                        geometry.rotateX(Math.PI/2);
+                        material = new SpotLightVolumetricMaterial();
+                        const cone = new THREE.Mesh(geometry, material);
+                        cone.translateZ(-2.6);
+                        spotlight.position.set(0,0,0);
+                        spotlight.target.position.set(0,0,-1);
+                        self.spotlight.add(spotlight.target);
+                        self.spotlight.add(spotlight);
+                        self.spotlight.add(cone);
 
-                    const spotlight = new THREE.SpotLight(0xFFFFFF,2,12,Math.PI/15,0.3);
-                    spotlight.position.set(0,0,0);
-                    spotlight.target.position.set(0,0,-1);
-                    self.spotlight.add(spotlight.target);
-                    self.spotlight.add(spotlight);
-
-                    controller.add(self.spotlight);
-                    self.spotlight.visible=false;
-
-                    geometry = new THREE.CylinderBufferGeometry(0.03,1,5,32,true);
-                    geometry.rotateX(Math.PI/2);
-                    material = new SpotLightVolumetricMaterial();
-                    const cone = new THREE.Mesh(geometry, material);
-                    cone.translateZ(-2.6);
-                    self.spotlight.add(cone);
-                }),
+                        controller.add(self.spotlight);
+                        self.spotlight.visible=false;
+                    },
                     null,
                     (error) => {
                     console.error('An error happened');
-                }
+                    }
+                );
                 
                 break;
                 
@@ -169,7 +169,7 @@ class App{
 
                 geometry = new THREE.RingBufferGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
                 material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
-                controller.add( new THREE.Mesh( geometry, material ) );
+                controller.add( new THREE.Mesh( geometry, material ) )
 
         }
 
