@@ -142,14 +142,14 @@ class App{
                try{
                 Object.entries(this.buttonStates).forEach(([key,value])=>{
                     const buttonIndex = this.gamepadIndices[key].button;
-                    if (key.indexOf('touchpad')!=-1 || key.indexOf('thumbstick')!=-1){
+                    if ( key.indexOf('touchpad')!=-1 || key.indexOf('thumbstick')!=-1){
                         const xAxisIndex = this.gamepadIndices[key].xAxis;
                         const yAxisIndex = this.gamepadIndices[key].yAxis;
                         this.buttonStates[key].button = gamepad.buttons[buttonIndex].value;
                         this.buttonStates[key].xAxis = gamepad.axes[xAxisIndex].toFixed(2);
-                        this.buttonStates[key].yAxis = gamepad.axes[xAxisIndex].toFixed(2);
-                    } else {
-                        this.buttonStates[key].button = gamepad.buttons[buttonIndex].value;
+                        this.buttonStates[key].yAxis = gamepad.axes[yAxisIndex].toFixed(2);
+                    }else{
+                        this.buttonStates[key] = gamepad.buttons[buttonIndex].value;
                     }
 
                     this.updateUI();
@@ -184,8 +184,9 @@ class App{
                     info[key] = components;
                 });
                 self.createButtonStates(info.right);
+                
                 self.updateControllers(info);
-            })
+            });
         }
          
         const controller = this.renderer.xr.getController( 0 );
