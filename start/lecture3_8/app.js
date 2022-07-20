@@ -88,12 +88,18 @@ class App{
         this.world.add(groundBody);
         this.helper.addVisual(groundBody, 0xFFAA00);
 
+        const shape = new CANNON.Sphere(0.1);
+        this.jointBody = new CANNON.Body({mass:0});
+        this.jointBody.addShape(shape);
+        this.jointBody.collisionFilterGroup = 0;
+        this.jointBody.collisionFilterMask = 0;
+        this.world.add(this.jointBody);
+
         this.box = this.addBody();
     }  
     
     addBody(box=true){
         let shape;
-
         if(!box){
             shape = new CANNON.Sphere(0.5);
         }else{
@@ -112,8 +118,17 @@ class App{
     }
     
     addConstraint(pos, body){
-        
-    }
+        const pivot = pos.clone();
+        body.threemesh.worldToLocal(pivot);
+        this.jointBody.position.copy(pos);
+
+        const constraint = new CANNON.PointToPointConstraint(body,pivot,
+        this.jointBody, new CANNON.Vec3(0,0,0));
+
+        this.world.addConstraint(constraint);
+
+        this.controller.userData.constraint = constraint;
+    }   
     
     setupXR(){
         this.renderer.xr.enabled = true;
