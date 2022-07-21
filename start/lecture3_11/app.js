@@ -39,6 +39,7 @@ class App{
         this.controls.update();
         
         this.stats = new Stats();
+        document.body.appendChild(this.stats.dom);
         
         this.origin = new THREE.Vector3();
         this.euler = new THREE.Euler();
@@ -111,7 +112,7 @@ class App{
     createUI() {
         
         const config = {
-            panelSize: { width: 0.2, height: 0.05 },
+            panelSize: { width: 0.15, height: 0.038 },
             height: 128,
             info:{ type: "text" }
         }
@@ -131,7 +132,7 @@ class App{
         let controller, controller1;
         
         function onSessionStart(){
-            self.ui.mesh.position.set( 0, -0.2, -0.3 );
+            self.ui.mesh.position.set( 0, -0.15, -0.3 );
             self.camera.add( self.ui.mesh );
         }
         
@@ -139,7 +140,7 @@ class App{
             self.camera.remove( self.ui.mesh );
         }
         
-        const btn = new ARButton( this.renderer, { onSessionStart, onSessionEnd } );
+        const btn = new ARButton( this.renderer, { onSessionStart, onSessionEnd });
         
         //Add gestures here
         this.gestures = new ControllerGestures(this.renderer);
@@ -147,23 +148,14 @@ class App{
         this.gestures.addEventListener('tap', (ev)=>{
             console.log('tap');
             self.ui.updateElement('info','tap');
-
-            if(!self.knight.object.visible){
+            if (!self.knight.object.visible){
                 self.knight.object.visible = true;
                 self.knight.object.position.sest(0, -0.3, -0.5).add(ev.position);
                 self.scene.add(self.knight.object);
             }
         });
 
-        this.gestures.addEventListener('swipe', (ev)=>{
-            console.log(ev);
-            self.ui.updateElement('info','swipe ${ev.direction}')
-            if (self.knight.object.visible){
-                self.knight.object.visible = false;
-                self.scene.remove(self.knight.object);
-            }
-        });
-
+        
         this.gestures.addEventListener('pan', (ev)=>{
             console.log(ev);
             if (ev.initialise !== undefined){
@@ -173,9 +165,19 @@ class App{
                     ev.delta.multiplyScalar(3)
                 );
                 self.knight.object.position.copy(pos);
-                self.ui.updateElement('info', 'pan x:${ev.delta.x.toFixed(3)} y:${ev.delta.y.toFixed(3)} z:${ev.delta.z.toFixed(3)}');
+                self.ui.updateElement('info', `pan x:${ev.delta.x.toFixed(3)} y:${ev.delta.y.toFixed(3)} z:${ev.delta.z.toFixed(3)}`);
             }
         });
+
+        this.gestures.addEventListener('swipe', (ev)=>{
+            console.log(ev);
+            self.ui.updateElement('info',`swipe ${ev.direction}`);
+            if (self.knight.object.visible){
+                self.knight.object.visible = false;
+                self.scene.remove(self.knight.object);
+            }
+        });
+
 
         this.gestures.addEventListener('pinch', (ev)=>{
             console.log(ev);
@@ -184,7 +186,7 @@ class App{
             }else{
                 const scale = self.startScale.clone().multiplyScalar(ev.scale);
                 self.knight.object.scale.copy(scale);
-                self.ui.updateElement('info','pinch delta:${ev.delta.toFixed(3)} scale:${ev.scale.toFixed(2)}');
+                self.ui.updateElement('info', `pinch delta:${ev.delta.toFixed(3)} scale:${ev.scale.toFixed(2)}` );
             }
         });
 
@@ -195,7 +197,7 @@ class App{
             }else{
                 self.knight.object.quaternion.copy(self.startQuaternion);
                 self.knight.object.rotateY(ev.theta);
-                self.ui.updateElement('info', 'rotate ${ev.theta.toFixed(3)}');
+                self.ui.updateElement('info', `rotate ${ev.theta.toFixed(3)}`);
             }
         })
 
