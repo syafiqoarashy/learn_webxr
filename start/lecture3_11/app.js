@@ -39,7 +39,7 @@ class App{
         this.controls.update();
         
         this.stats = new Stats();
-        document.body.appendChild(this.stats.dom);
+        document.body.appendChild( this.stats.dom );
         
         this.origin = new THREE.Vector3();
         this.euler = new THREE.Euler();
@@ -144,13 +144,12 @@ class App{
         
         //Add gestures here
         this.gestures = new ControllerGestures(this.renderer);
-
         this.gestures.addEventListener('tap', (ev)=>{
-            console.log('tap');
-            self.ui.updateElement('info','tap');
+            //console.log('tap');
+            self.ui.updateElement('info', 'tap' );
             if (!self.knight.object.visible){
                 self.knight.object.visible = true;
-                self.knight.object.position.sest(0, -0.3, -0.5).add(ev.position);
+                self.knight.object.position.set(0, -0.3, -0.5).add(ev.position);
                 self.scene.add(self.knight.object);
             }
         });
@@ -165,7 +164,7 @@ class App{
                     ev.delta.multiplyScalar(3)
                 );
                 self.knight.object.position.copy(pos);
-                self.ui.updateElement('info', `pan x:${ev.delta.x.toFixed(3)} y:${ev.delta.y.toFixed(3)} z:${ev.delta.z.toFixed(3)}`);
+                self.ui.updateElement('info', `pan x:${ev.delta.x.toFixed(3)}, y:${ev.delta.y.toFixed(3)}, z:${ev.delta.z.toFixed(3)}`);
             }
         });
 
@@ -199,7 +198,7 @@ class App{
                 self.knight.object.rotateY(ev.theta);
                 self.ui.updateElement('info', `rotate ${ev.theta.toFixed(3)}`);
             }
-        })
+        });
 
         this.renderer.setAnimationLoop( this.render.bind(this) );
     }
