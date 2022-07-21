@@ -80,10 +80,10 @@ class App{
 
         this.helper = new CannonHelper(this.scene, this.world);
 
-        const groundBody = new CANNON.Body({mass:0});
-        groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), 
-        -Math.PI/2);
+        
         const groundShape = new CANNON.Plane();
+        const groundBody = new CANNON.Body({ mass: 0 });
+        groundBody.quaternion.setFromAxisAngle( new CANNON.Vec3(1,0,0), -Math.PI/2);
         groundBody.addShape(groundShape);
         this.world.add(groundBody);
         this.helper.addVisual(groundBody, 0xFFAA00);
