@@ -130,7 +130,7 @@ class App{
                 
                 self.knight = gltf.scene.children[0];
                 
-                self.mixer = new THREE.AnimationMixer( self.knight )
+                self.mixer = new THREE.AnimationMixer( self.knight );
                 
                 self.scene.add( self.knight );
                 

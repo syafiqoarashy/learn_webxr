@@ -70,6 +70,29 @@ class App{
         this.loadGLTF( 'knight' );
     }
     
+    set action(name) {
+        if (this.actionName==name) return;
+
+        const clip = this.animations[name];
+
+        if (clip!==undefined){
+            const action = this.mixer.clipAction(clip);
+
+            if(name=='Die'){
+                action.loop = THREE.LoopOnce;
+                action.clampWhenFinished = true;
+            }
+
+            this.actionName = name;
+            if(this.curAction) this.curAction.crossFadeTo(action,0.5);
+
+            action.enabled = true;
+            action.play();
+
+            this.curAction = action;
+        }
+    }
+
     addButtonEvents(){
         const self = this;
         
@@ -81,29 +104,6 @@ class App{
             const btn = document.getElementById(`btn${i}`);
             btn.addEventListener( 'click', onClick );
         }    
-    }
-    
-    set action(name) {
-        if (this.actionName==name) return;
-
-        const clip = this.animations[name];
-
-        if (clip!==undefined){
-            const action = this.mixer.clipAction(clip);
-
-            if(name=="Die"){
-                action.loop = THREE.LoopOnce;
-                action.clampWhenFinished = true;
-            }
-            
-            this.actionName = name;
-            if(this.curAction) this.curAction.crossFadeTo(action,0.5);
-
-            action.enabled = true;
-            action.play();
-
-            this.curAction = action;
-        }
     }
 
     loadGLTF(filename){
@@ -122,9 +122,9 @@ class App{
 			function ( gltf ) {
                 self.animations = {};
 
-                gltf.animations.forEach(anim => {
+                gltf.animations.forEach((anim) => {
                     self.animations[anim.name] = anim;
-                });
+                })
 
                 self.addButtonEvents();
 
