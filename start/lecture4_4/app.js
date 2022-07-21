@@ -83,6 +83,29 @@ class App{
         }    
     }
     
+    set action(name) {
+        if (this.actionName==name) return;
+
+        const clip = this.animations[name];
+
+        if (clip!==undefined){
+            const action = this.mixer.clipAction(clip);
+
+            if(name=="Die"){
+                action.loop = THREE.LoopOnce;
+                action.clampWhenFinished = true;
+            }
+            
+            this.actionName = name;
+            if(this.curAction) this.curAction.crossFadeTo(action,0.5);
+
+            action.enabled = true;
+            action.play();
+
+            this.curAction = action;
+        }
+    }
+
     loadGLTF(filename){
         const loader = new GLTFLoader( );
         const dracoLoader = new DRACOLoader();
@@ -97,7 +120,27 @@ class App{
 			`${filename}.glb`,
 			// called when the resource is loaded
 			function ( gltf ) {
-                
+                self.animations = {};
+
+                gltf.animations.forEach(anim => {
+                    self.animations[anim.name] = anim;
+                });
+
+                self.addButtonEvents();
+
+                self.knight = gltf.scene.children[0];
+
+                self.mixer = new THREE.AnimationMixer(self.knight);
+
+                self.scene.add(self.knight);
+
+                self.loadingBar.visible = false;
+
+                self.action = "Idle";
+
+                const scale = 0.01;
+                self.knight.scale.set(scale,scale,scale);
+
                 self.renderer.setAnimationLoop( self.render.bind(self) );
 			},
 			// called while loading is progressing
