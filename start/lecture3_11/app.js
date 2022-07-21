@@ -143,18 +143,16 @@ class App{
         const btn = new ARButton( this.renderer, { onSessionStart, onSessionEnd });
         
         //Add gestures here
-        this.gestures = new ControllerGestures(this.renderer);
-        this.gestures.addEventListener('tap', (ev)=>{
-            //console.log('tap');
+        this.gestures = new ControllerGestures( this.renderer );
+        this.gestures.addEventListener( 'tap', (ev)=>{
+            //console.log( 'tap' );
             self.ui.updateElement('info', 'tap' );
             if (!self.knight.object.visible){
                 self.knight.object.visible = true;
-                self.knight.object.position.set(0, -0.3, -0.5).add(ev.position);
-                self.scene.add(self.knight.object);
+                self.knight.object.position.set( 0, -0.3, -0.5 ).add( ev.position );
+                self.scene.add( self.knight.object );
             }
         });
-
-        
         this.gestures.addEventListener('pan', (ev)=>{
             console.log(ev);
             if (ev.initialise !== undefined){
