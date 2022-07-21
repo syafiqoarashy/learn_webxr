@@ -90,7 +90,13 @@ class App{
             }
         }
         
-        
+        this.dolly = new THREE.Object3D();
+        this.dolly.position.z = 5;
+        this.dolly.add(this.camera);
+        this.scene.add(this.dolly);
+
+        this.dummyCam = new THREE.Object3D();
+        this.camera.add(this.dummyCam);
     } 
     
     setupXR(){
@@ -137,13 +143,6 @@ class App{
         this.controllerGrip.add( controllerModelFactory.createControllerModel( this.controllerGrip ) );
         this.scene.add( this.controllerGrip );
 
-        this.dolly = new THREE.Object3D();
-        this.dolly.position.z = 5;
-        this.dolly.add(this.camera);
-        this.scene.add(this.dolly);
-
-        this.dummyCam = new THREE.Object3D();
-        this.camera.add(this.dummyCam);
     }
     
     buildController( data ) {
