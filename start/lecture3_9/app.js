@@ -10,8 +10,7 @@ class App{
         
         this.clock = new THREE.Clock();
         
-		this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth /
-        window.innerHeight, 0.01, 20 );
+		this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
 		
 		this.scene = new THREE.Scene();
         
@@ -55,17 +54,17 @@ class App{
         function onSelect(){
             const material = new THREE.MeshPhongMaterial( {color: 0xFFFFFF * Math.random()});
             const mesh = new THREE.Mesh(self.geometry,material);
-            mesh.position.set(0,0,-0.3).applyMatrix4(controller.matrixWorld);
+            mesh.position.set( 0, 0, - 0.3).applyMatrix4(controller.matrixWorld);
             mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);
             self.scene.add(mesh);
             self.meshes.push(mesh);
         }
 
-        const btn  = new ARButton(this.renderer);
+        const btn = new ARButton( this.renderer );
 
-        controller = this.renderer.xr.getController(0);
-        controller.addEventListener('select',onSelect);
-        this.scene.add(controller);
+        controller = this.renderer.xr.getController( 0 );
+        controller.addEventListener( 'select', onSelect );
+        this.scene.add( controller );
 
         this.renderer.setAnimationLoop( this.render.bind(this) );
     }
