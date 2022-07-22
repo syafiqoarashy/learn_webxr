@@ -70,8 +70,8 @@ class App{
         this.loadGLTF( 'knight' );
     }
     
-    set action(name) {
-        if (this.actionName==name) return;
+    set action(name){
+        if (this.actionName == name) return;
 
         const clip = this.animations[name];
 
