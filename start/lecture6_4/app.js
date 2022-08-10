@@ -151,32 +151,47 @@ class App{
 			}
 		);
 	}
-    
+    onMove(forward,turn){
+        if (this.dolly){
+            this.dolly.userData.forward = forward;
+            this.dolly.userData.turn = -turn;
+        }
+    }
     setupXR(){
         this.renderer.xr.enabled = true;
 
         const self = this;
-   
-        function onSelectStart( event ) {
-
-            this.userData.selectPressed = true;
-
-        }
-
-        function onSelectEnd( event ) {
-
-            this.userData.selectPressed = false;
-
-        }
-
-        self.controllers = self.buildControllers( self.dolly );
-
-        self.controllers.forEach( ( controller ) =>{
-            controller.addEventListener( 'selectstart', onSelectStart );
-            controller.addEventListener( 'selectend', onSelectEnd );
-        });          
         
-        const btn = new VRButton( this.renderer );
+        function vrStatus(available){
+            if (available){
+                function onSelectStart( event ) {
+
+                    this.userData.selectPressed = true;
+        
+                }
+        
+                function onSelectEnd( event ) {
+        
+                    this.userData.selectPressed = false;
+        
+                }
+        
+                self.controllers = self.buildControllers( self.dolly );
+        
+                self.controllers.forEach( ( controller ) =>{
+                    controller.addEventListener( 'selectstart', onSelectStart );
+                    controller.addEventListener( 'selectend', onSelectEnd );
+                });      
+            } else {
+                self.joystick = new JoyStick({
+                    onMove: self.onMove.bind(self)
+                });
+            }
+        }
+
+            
+        
+        const btn = new VRButton( this.renderer, {vrStatus} );
         
         const config = {
             panelSize: { height: 0.5 },
@@ -229,13 +244,22 @@ class App{
         pos.y += 1;
         
 		let dir = new THREE.Vector3();
+        if (this.joystick===undefined){
+            //Store original dolly rotation
+            const quaternion = this.dolly.quaternion.clone();
+            //Get rotation for movement from the headset pose
+            this.dolly.quaternion.copy( this.dummyCam.getWorldQuaternion() );
+            this.dolly.getWorldDirection(dir);
+            dir.negate();
+        }else{
+            this.dolly.getWorldDirection(dir);
+            if (this.dolly.userData.forward>0){
+                dir.negate();
+            }else{
+                dt = -dt;
+            }
+        }
         
-        //Store original dolly rotation
-        const quaternion = this.dolly.quaternion.clone();
-        //Get rotation for movement from the headset pose
-        this.dolly.quaternion.copy( this.dummyCam.getWorldQuaternion() );
-        this.dolly.getWorldDirection(dir);
-        dir.negate();
         
   		this.raycaster.set(pos, dir);
 		
@@ -313,6 +337,15 @@ class App{
             moved = true;
         }
         
+        if (this.joystick !== undefined){
+            if(this.dolly.userData.forward !== undefined){
+                if(this.dolly.userData.forward != 0){
+                    this.moveDolly(dt);
+                    moved = true;
+                }
+                this.dolly.rotateY(this.dolly.userData.turn*dt);
+            }
+        }
         if (this.boardData && moved){
             const scene = this.scene;
             const dollyPos = this.dolly.getWorldPosition( new THREE.Vector3() );
