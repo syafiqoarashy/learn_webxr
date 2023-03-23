@@ -227,12 +227,12 @@ class App{
         
         function onSqueezeStart( ){
             this.userData.squeezePressed = true;
-            self.teleport.forEach( teleport => teleport.fadeIn(1));
+            self.teleports.forEach(teleport => teleport.fadeIn(1));
         }
         
         function onSqueezeEnd( ){
             this.userData.squeezePressed = false;
-            self.teleport.forEach( teleport => teleport.fadeOut(1));
+            self.teleports.forEach(teleport => teleport.fadeOut(1));
         }
         
         const btn = new VRButton( this.renderer );
